@@ -16,4 +16,40 @@ val topol : ('a * 'a list) list -> 'a list
 open PMap
 
 
-let topol list =
+let topol lista_sasiadow =
+(* mapa z modulu PMap, w wezlach znajduja sie pary (wierzcholek, lista sasiadow tego wierzcholka) *)
+    let mapa_sasiadow =
+        List.fold_left (fun acc (wierzcholek, lista) -> add wierzcholek lista acc) empty lista_sasiadow in
+(* mapa z modulu PMap, w wezlach znajduja sie pary (wierzcholek, stopien wchodzacy tego wierzcholka) *)
+    let mapa_stopni =
+(* funkcja dodajaca do mapy stopni pare (wierzcholek, lista sasiadow tego wierzcholka) *)
+        let dodaj_pare (wierzcholek, lista) mapa =
+(* najpierw dodawanie samego wierzcholka *)
+(* dodajac wierzcholek do mapy nie zwiekszamy oczywiscie stopnia wchodzacego tego wierzcholka *)
+            let mapa_po_dodaniu_wierzcholka =
+                if exists wierzcholek mapa then mapa
+                else add wierzcholek (ref 0) mapa in
+(* dodawanie sasiada *)
+            let dodaj_sasiada sasiad mapa =
+(* jezeli sasiad byl w mapie, jego stopien wchodzacy zwieksza sie o 1 *)
+                if exists sasiad mapa then
+                    let stopien = find sasiad mapa in
+                    begin
+                        stopien =: !stopien +1;
+                        mapa
+                    end
+(* jezeli sasiada nie bylo w mapie, to nalezy dodac go ze stopniem wchodzacym 1 *)
+                else add sasiad (ref 1) mapa in
+            List.fold_left dodaj_sasiada mapa_po_dodaniu_wierzcholka lista in
+        ref (List.fold_left dodaj_pare empty list_sasiadow) in
+(* zbior wierzcholkow o stopniu wchodzacym rownym 1 *)
+    let zbior1 = ref [] in
+(* zbior wierzcholkow o stopniu wchodzacym rownym 1 *)
+    let zbior2 = ref [] in
+(* odwrocony wynik *)
+    let wynik = ref [] in
+(* funkcja usuwajaca wierzcholek z mapy *)
+(* 
+    let usun_wierzcholek wierzcholek =
+        
+                
