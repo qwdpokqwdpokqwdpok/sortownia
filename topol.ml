@@ -42,14 +42,31 @@ let topol lista_sasiadow =
                 else add sasiad (ref 1) mapa in
             List.fold_left dodaj_sasiada mapa_po_dodaniu_wierzcholka lista in
         ref (List.fold_left dodaj_pare empty list_sasiadow) in
-(* zbior wierzcholkow o stopniu wchodzacym rownym 1 *)
+(* zbior wierzcholkow o stopniu wchodzacym rownym 0 *)
     let zbior1 = ref [] in
-(* zbior wierzcholkow o stopniu wchodzacym rownym 1 *)
+(* zbior wierzcholkow o stopniu wchodzacym rownym 0 *)
     let zbior2 = ref [] in
 (* odwrocony wynik *)
     let wynik = ref [] in
-(* funkcja usuwajaca wierzcholek z mapy *)
-(* 
+(* funkcja usuwa wierzcholek z mapy *)
+(* dodaje wierzcholek do wyniku *)
+(* zmniejsza stopien wszysktich jego sasiadow o 1 *)
     let usun_wierzcholek wierzcholek =
-        
-                
+        begin
+            mapa_stopni =: remove wierzcholek !mapa_stopni;
+            wynik =: wierzcholek::(!wynik);
+(* jezeli wierzcholek ma sasiada *)
+            if exists wierzcholek mapa_sasiadow then
+(* funkcja zmniejszajaca stopien sasiada *)
+(* jezeli stopien jest rowny 0, sasiad jest zapamietywany *)
+                let zmniejsz_stopien sasiad =
+                    let stopien = find sasiad mapa_stopni in
+                    stopien =: !stopien - 1;
+                    if stopien = 0 then zbior1 =: sasiad::(!zbior2) in
+                List.iter zmniejsz_stopien (find wierzcholek mapa_sasiadow);
+        end in
+    begin
+
+
+
+
