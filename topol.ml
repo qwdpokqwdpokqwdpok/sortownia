@@ -66,7 +66,18 @@ let topol lista_sasiadow =
                 List.iter zmniejsz_stopien (find wierzcholek mapa_sasiadow);
         end in
     begin
-
-
-
+(* tworzy liste kluczy o stopniu wchodzacym rownym 0 *)
+        zbior1 =: foldi (fun wierzcholek stopien lista -> if stopien = 0 then wierzcholek::lista else lista) !mapa_stopni [];
+(* usuwa z mapy kolejno wszystkie wierzcholki o stopniu wchodzacym rownym 0
+(ze zbioru 1, jednoczesnie zapamietujac nowe do zbioru 2),
+az do momentu kiedy mapa jest pusta *)
+(* jezeli zbior wierzcholkow o stopniu rownym 0 bedzie pusty, oznacza to, ze graf zawiera cykl *)
+        while not (is_empty !mapa_stopni) do
+            if zbior1 = [] then rasie Cykliczne else
+            List.iter usun_wierzcholek !zbior1;
+            zbior1 =: zbior2;
+            zbior2 =: []
+        done;
+        List.rev !wynik
+    end
 
